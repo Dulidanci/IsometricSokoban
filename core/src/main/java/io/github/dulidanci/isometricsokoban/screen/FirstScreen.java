@@ -1,4 +1,4 @@
-package io.github.dulidanci.pixelatedworld;
+package io.github.dulidanci.isometricsokoban.screen;
 
 import com.badlogic.gdx.Screen;
 
