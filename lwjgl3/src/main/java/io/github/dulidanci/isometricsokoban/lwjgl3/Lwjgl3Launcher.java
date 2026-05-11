@@ -12,7 +12,7 @@ public class Lwjgl3Launcher {
     }
 
     private static Lwjgl3Application createApplication() {
-        return new Lwjgl3Application(new IsometricSokoban(), getDefaultConfiguration());
+        return new Lwjgl3Application(IsometricSokoban.getInstance(), getDefaultConfiguration());
     }
 
     private static Lwjgl3ApplicationConfiguration getDefaultConfiguration() {
