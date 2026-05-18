@@ -2,7 +2,10 @@ package io.github.dulidanci.isometricsokoban;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.assets.AssetManager;
-import io.github.dulidanci.isometricsokoban.screen.FirstScreen;
+import com.badlogic.gdx.graphics.Texture;
+import io.github.dulidanci.isometricsokoban.block.Blocks;
+import io.github.dulidanci.isometricsokoban.registry.Registries;
+import io.github.dulidanci.isometricsokoban.screen.LevelScreen;
 import io.github.dulidanci.isometricsokoban.screen.ScreenManager;
 
 public class IsometricSokoban implements ApplicationListener {
@@ -10,9 +13,9 @@ public class IsometricSokoban implements ApplicationListener {
     private static IsometricSokoban instance;
     private ScreenManager screenManager;
     private AssetManager assetManager;
+    public static final int MAX_LEVEL_COUNT = 1;
 
-    private IsometricSokoban() {
-    }
+    private IsometricSokoban() {}
 
     public static IsometricSokoban getInstance() {
         if (instance == null) {
@@ -25,12 +28,12 @@ public class IsometricSokoban implements ApplicationListener {
     public void create() {
         screenManager = new ScreenManager();
         assetManager = new AssetManager();
+        Blocks.init();
 
-//        assetManager.load(ID + "/textures/blocks/block.png", Texture.class);
-//        assetManager.load(ID + "/textures/blocks/brick.png", Texture.class);
-//        assetManager.load(ID + "/textures/blocks/wall.png", Texture.class);
+        Registries.BLOCKS.getAll().forEach(name -> assetManager.load(ID + "/textures/blocks/" + name + ".png", Texture.class));
+        assetManager.finishLoading();
 
-        screenManager.setScreen(new FirstScreen());
+        screenManager.setScreen(new LevelScreen());
     }
 
     @Override

@@ -1,0 +1,47 @@
+{
+  "size": {
+    "length": 6,
+    "width": 6,
+    "height": 5
+  },
+  "right_wall": {
+    "default": [
+      "wall"
+    ],
+    "features": [
+      {
+        "type": "block",
+        "block": "box",
+        "x": 6,
+        "y": 5
+      }
+    ]
+  },
+  "left_wall": {
+    "default": [
+      "wall"
+    ]
+  },
+  "floor": {
+    "default": [
+      "block",
+      "brick"
+    ]
+  },
+  "board": {
+    "features": [
+      {
+        "type": "block",
+        "block": "box",
+        "x": 2,
+        "y": 3
+      },
+      {
+        "type": "block",
+        "block": "box",
+        "x": 3,
+        "y": 0
+      }
+    ]
+  }
+}
