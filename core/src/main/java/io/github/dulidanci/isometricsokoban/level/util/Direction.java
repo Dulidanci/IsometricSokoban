@@ -6,13 +6,13 @@ public enum Direction {
     DOWN(0, -1),
     LEFT(-1, 0);
 
-    private final Position2 vector;
+    private final BlockPos vector;
 
     Direction(int x, int y) {
-        this.vector = new Position2(x, y);
+        this.vector = new BlockPos(x, y, 0);
     }
 
-    public Position2 getVector() {
+    public BlockPos getVector() {
         return vector;
     }
 

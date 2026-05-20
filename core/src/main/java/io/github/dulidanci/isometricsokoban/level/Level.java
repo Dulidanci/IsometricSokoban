@@ -2,7 +2,7 @@ package io.github.dulidanci.isometricsokoban.level;
 
 import io.github.dulidanci.isometricsokoban.block.Block;
 import io.github.dulidanci.isometricsokoban.block.Blocks;
-import io.github.dulidanci.isometricsokoban.level.util.Position3;
+import io.github.dulidanci.isometricsokoban.level.util.BlockPos;
 import io.github.dulidanci.isometricsokoban.util.Pair;
 
 import java.util.ArrayList;
@@ -27,8 +27,8 @@ public class Level {
         map.putAll(builder.map);
     }
 
-    public ArrayList<Pair<Position3, Block>> renderOrder() {
-        ArrayList<Pair<Position3, Block>> blocks = new ArrayList<>();
+    public ArrayList<Pair<BlockPos, Block>> renderOrder() {
+        ArrayList<Pair<BlockPos, Block>> blocks = new ArrayList<>();
 
         for (MapLayer layer : MapLayer.values()) {
             if (map.containsKey(layer)) {
@@ -36,10 +36,10 @@ public class Level {
                     for (int j = 0; j < layer.y; j++) {
                         if (map.get(layer)[i][j] != Blocks.AIR) {
                             switch (layer) {
-                                    case RIGHT_WALL -> blocks.add(Pair.of(new Position3(i, j, 0), map.get(layer)[i][j]));
-                                    case LEFT_WALL -> blocks.add(Pair.of(new Position3(0, j, i + 1), map.get(layer)[i][j]));
-                                    case FLOOR -> blocks.add(Pair.of(new Position3(j + 1, 0, i + 1), map.get(layer)[i][j]));
-                                    case BOARD -> blocks.add(Pair.of(new Position3(j + 1, 1, i + 1), map.get(layer)[i][j]));
+                                    case RIGHT_WALL -> blocks.add(Pair.of(new BlockPos(i, j, 0), map.get(layer)[i][j]));
+                                    case LEFT_WALL -> blocks.add(Pair.of(new BlockPos(0, j, i + 1), map.get(layer)[i][j]));
+                                    case FLOOR -> blocks.add(Pair.of(new BlockPos(j + 1, 0, i + 1), map.get(layer)[i][j]));
+                                    case BOARD -> blocks.add(Pair.of(new BlockPos(j + 1, 1, i + 1), map.get(layer)[i][j]));
                             }
                         }
                     }

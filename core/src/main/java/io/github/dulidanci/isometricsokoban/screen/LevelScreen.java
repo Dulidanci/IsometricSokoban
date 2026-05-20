@@ -11,7 +11,7 @@ import io.github.dulidanci.isometricsokoban.IsometricSokoban;
 import io.github.dulidanci.isometricsokoban.block.Block;
 import io.github.dulidanci.isometricsokoban.level.Level;
 import io.github.dulidanci.isometricsokoban.level.LevelLoader;
-import io.github.dulidanci.isometricsokoban.level.util.Position3;
+import io.github.dulidanci.isometricsokoban.level.util.BlockPos;
 import io.github.dulidanci.isometricsokoban.util.Pair;
 
 import java.util.ArrayList;
@@ -40,8 +40,8 @@ public class LevelScreen implements Screen {
         batch.begin();
 
         if (level != null) {
-            ArrayList<Pair<Position3, Block>> blockList = level.renderOrder();
-            for (Pair<Position3, Block> pair : blockList) {
+            ArrayList<Pair<BlockPos, Block>> blockList = level.renderOrder();
+            for (Pair<BlockPos, Block> pair : blockList) {
                 batch.draw(
                     IsometricSokoban.getInstance().getAssetManager().get(IsometricSokoban.ID + "/textures/blocks/" + pair.getSecond().id + ".png", Texture.class),
                     288 + pair.getFirst().x() * 32 - pair.getFirst().z() * 32,
