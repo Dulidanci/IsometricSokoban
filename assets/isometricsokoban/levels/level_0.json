@@ -1,47 +1,98 @@
 {
   "size": {
-    "length": 6,
     "width": 6,
-    "height": 5
+    "height": 5,
+    "length": 6
   },
-  "right_wall": {
-    "default": [
-      "wall"
-    ],
-    "features": [
+  "pools": [
+    {
+      "name": "floor",
+      "list": [
+        "block",
+        "brick"
+      ]
+    }
+  ],
+  "pillars": [
+    {
+      "blocks": "block",
+      "block": "wall",
+      "positions": [
+        {
+          "x": 0,
+          "z": 0
+        },
+        {
+          "x": 1,
+          "z": 0
+        },
+        {
+          "x": 2,
+          "z": 0
+        },
+        {
+          "x": 3,
+          "z": 0
+        },
+        {
+          "x": 4,
+          "z": 0
+        },
+        {
+          "x": 5,
+          "z": 0
+        },
+        {
+          "x": 0,
+          "z": 1
+        },
+        {
+          "x": 0,
+          "z": 2
+        },
+        {
+          "x": 0,
+          "z": 3
+        },
+        {
+          "x": 0,
+          "z": 4
+        },
+        {
+          "x": 0,
+          "z": 5
+        }
+      ]
+    }
+  ],
+  "cuboids": [
+    {
+      "blocks": "pool",
+      "pool": "floor",
+      "start":
       {
-        "type": "block",
-        "block": "box",
-        "x": 6,
-        "y": 5
-      }
-    ]
-  },
-  "left_wall": {
-    "default": [
-      "wall"
-    ]
-  },
-  "floor": {
-    "default": [
-      "block",
-      "brick"
-    ]
-  },
-  "board": {
-    "features": [
-      {
-        "type": "block",
-        "block": "box",
-        "x": 2,
-        "y": 3
+        "x": 1,
+        "y": 0,
+        "z": 1
       },
+      "end":
       {
-        "type": "block",
-        "block": "box",
-        "x": 3,
-        "y": 0
+        "x": 5,
+        "y": 0,
+        "z": 5
       }
-    ]
-  }
+    }
+  ],
+  "singles": [
+    {
+      "blocks": "block",
+      "block": "box",
+      "pos":
+      {
+        "x": 4,
+        "y": 1,
+        "z": 2
+      }
+    }
+  ]
 }
