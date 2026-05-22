@@ -1,12 +1,16 @@
 package io.github.dulidanci.isometricsokoban;
 
 import com.badlogic.gdx.ApplicationListener;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import io.github.dulidanci.isometricsokoban.block.Blocks;
 import io.github.dulidanci.isometricsokoban.registry.Registries;
 import io.github.dulidanci.isometricsokoban.screen.LevelScreen;
 import io.github.dulidanci.isometricsokoban.screen.ScreenManager;
+
+import java.util.Objects;
 
 public class IsometricSokoban implements ApplicationListener {
     public static final String ID = "isometricsokoban";
@@ -30,7 +34,10 @@ public class IsometricSokoban implements ApplicationListener {
         assetManager = new AssetManager();
         Blocks.init();
 
-        Registries.BLOCKS.getAll().forEach(name -> assetManager.load(ID + "/textures/blocks/" + name + ".png", Texture.class));
+        Registries.BLOCKS.getAll().forEach(name ->
+            assetManager.load(Objects.equals(name, "player") ?
+                ID + "/textures/player/" + name + ".png" :
+                ID + "/textures/blocks/" + name + ".png", Texture.class));
         assetManager.finishLoading();
 
         screenManager.setScreen(new LevelScreen());
@@ -43,6 +50,9 @@ public class IsometricSokoban implements ApplicationListener {
 
     @Override
     public void render() {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.R)) {
+            screenManager.setScreen(new LevelScreen());
+        }
         screenManager.render();
     }
 
@@ -59,10 +69,6 @@ public class IsometricSokoban implements ApplicationListener {
     @Override
     public void dispose() {
         screenManager.dispose();
-    }
-
-    public ScreenManager getScreenManager() {
-        return screenManager;
     }
 
     public AssetManager getAssetManager() {

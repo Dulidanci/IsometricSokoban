@@ -4,24 +4,14 @@ import io.github.dulidanci.isometricsokoban.level.Level;
 import io.github.dulidanci.isometricsokoban.level.util.BlockPos;
 import io.github.dulidanci.isometricsokoban.level.util.Direction;
 
-public class Block extends AbstractBlock {
+public class PushableBlock extends Block {
 
-    public Block(String id) {
+    public PushableBlock(String id) {
         super(id);
     }
 
     @Override
-    public boolean isSolid() {
-        return true;
-    }
-
-    @Override
     public boolean canBeMoved(Level level, BlockPos pos, Direction direction) {
-        return false;
-    }
-
-    @Override
-    public boolean visible() {
-        return true;
+        return level.move(pos, direction);
     }
 }

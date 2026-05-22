@@ -86,6 +86,12 @@ public class LevelLoader {
                 }
             }
 
+            builder.setPlayer(new BlockPos(
+                root.get("player").getInt("x"),
+                root.get("player").getInt("y"),
+                root.get("player").getInt("z")
+            ));
+
             return builder.build();
 
         } catch (Exception e) {
