@@ -14,7 +14,7 @@ public class Player {
     }
 
     public void move(Level level, Direction direction) {
-        if (level.move(pos, direction)) {
+        if (level.validPosition(pos.add(direction.getVector()).add(Direction.DOWN.getVector())) && level.getBlock(pos.add(direction.getVector()).add(Direction.DOWN.getVector())).isSolid() && level.move(pos, direction)) {
             this.direction = direction;
             pos = pos.add(direction.getVector());
         }

@@ -78,15 +78,15 @@ public class Level {
         return false;
     }
 
-    private boolean validPosition(BlockPos pos) {
+    public boolean validPosition(BlockPos pos) {
         return pos.x() >= 0 && pos.x() < this.width && pos.y() >= 0 && pos.y() < this.height && pos.z() >= 0 && pos.z() < this.length;
     }
 
-    private Block getBlock(BlockPos pos) {
+    public Block getBlock(BlockPos pos) {
         return map[pos.x()][pos.y()][pos.z()];
     }
 
-    private void setBlock(BlockPos pos, Block block) {
+    public void setBlock(BlockPos pos, Block block) {
         map[pos.x()][pos.y()][pos.z()] = block;
     }
 

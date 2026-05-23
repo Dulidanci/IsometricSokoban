@@ -7,7 +7,7 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import io.github.dulidanci.isometricsokoban.block.Blocks;
 import io.github.dulidanci.isometricsokoban.registry.Registries;
-import io.github.dulidanci.isometricsokoban.screen.LevelScreen;
+import io.github.dulidanci.isometricsokoban.screen.LevelSelectorScreen;
 import io.github.dulidanci.isometricsokoban.screen.ScreenManager;
 
 import java.util.Objects;
@@ -17,7 +17,7 @@ public class IsometricSokoban implements ApplicationListener {
     private static IsometricSokoban instance;
     private ScreenManager screenManager;
     private AssetManager assetManager;
-    public static final int MAX_LEVEL_COUNT = 1;
+    public static final int MAX_LEVEL_COUNT = 3;
 
     private IsometricSokoban() {}
 
@@ -38,9 +38,10 @@ public class IsometricSokoban implements ApplicationListener {
             assetManager.load(Objects.equals(name, "player") ?
                 ID + "/textures/player/" + name + ".png" :
                 ID + "/textures/blocks/" + name + ".png", Texture.class));
+        assetManager.load(ID + "/textures/widgets/button.png", Texture.class);
         assetManager.finishLoading();
 
-        screenManager.setScreen(new LevelScreen());
+        screenManager.setScreen(new LevelSelectorScreen());
     }
 
     @Override
@@ -51,7 +52,10 @@ public class IsometricSokoban implements ApplicationListener {
     @Override
     public void render() {
         if (Gdx.input.isKeyJustPressed(Input.Keys.R)) {
-            screenManager.setScreen(new LevelScreen());
+            screenManager.setScreen(screenManager.getScreen());
+        }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+            screenManager.setScreen(new LevelSelectorScreen());
         }
         screenManager.render();
     }
@@ -73,5 +77,9 @@ public class IsometricSokoban implements ApplicationListener {
 
     public AssetManager getAssetManager() {
         return assetManager;
+    }
+
+    public ScreenManager getScreenManager() {
+        return screenManager;
     }
 }

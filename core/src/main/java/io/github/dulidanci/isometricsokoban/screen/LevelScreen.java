@@ -12,17 +12,19 @@ import io.github.dulidanci.isometricsokoban.level.LevelLoader;
 public class LevelScreen implements Screen {
     public final SpriteBatch batch;
     public final ExtendViewport viewport;
+    public int number;
     public Level level;
 
-    public LevelScreen() {
+    public LevelScreen(int level) {
         batch = new SpriteBatch();
         viewport = new ExtendViewport(640, 480, new OrthographicCamera(640, 480));
         viewport.getCamera().position.set(320, 240, 0);
+        number = level;
     }
 
     @Override
     public void show() {
-        level = LevelLoader.load(0);
+        level = LevelLoader.load(number);
     }
 
     @Override
@@ -51,23 +53,16 @@ public class LevelScreen implements Screen {
     }
 
     @Override
-    public void pause() {
-        // Invoked when your application is paused.
-    }
+    public void pause() {}
 
     @Override
-    public void resume() {
-        // Invoked when your application is resumed after pause.
-    }
+    public void resume() {}
 
     @Override
-    public void hide() {
-        // This method is called when another screen replaces this one.
-    }
+    public void hide() {}
 
     @Override
     public void dispose() {
-        // Destroy screen's assets here.
         batch.dispose();
     }
 }
