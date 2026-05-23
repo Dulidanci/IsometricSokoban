@@ -47,6 +47,21 @@ public class Level {
         if (Gdx.input.isKeyJustPressed(Input.Keys.D)) {
             player.move(this, Direction.RIGHT);
         }
+
+        boolean fail = false;
+        for (int i = 0; i < width; i++) {
+            for (int j = 0; j < height; j++) {
+                for (int k = 0; k < length; k++) {
+                    if (map[i][j][k] == Blocks.TARGET && (!validPosition(new BlockPos(i, j + 1, k)) || map[i][j + 1][k] != Blocks.BOX)) {
+                        fail = true;
+                    }
+                }
+            }
+        }
+
+        if (!fail) {
+            System.out.println("YAY, You won!");
+        }
     }
 
     public boolean move(BlockPos pos, Direction direction) {

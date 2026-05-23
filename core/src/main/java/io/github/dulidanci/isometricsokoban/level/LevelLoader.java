@@ -54,19 +54,21 @@ public class LevelLoader {
                 for (JsonValue cuboid : cuboids) {
                     Block[] blocks = selectBlockPalette(root, cuboid);
 
-                    int[] corners = new int[]{
-                        cuboid.get("start").getInt("x"),
-                        cuboid.get("start").getInt("y"),
-                        cuboid.get("start").getInt("z"),
-                        cuboid.get("end").getInt("x"),
-                        cuboid.get("end").getInt("y"),
-                        cuboid.get("end").getInt("z")
-                    };
+                    for (JsonValue position : cuboid.get("positions")) {
+                        int[] corners = new int[]{
+                            position.get("start").getInt("x"),
+                            position.get("start").getInt("y"),
+                            position.get("start").getInt("z"),
+                            position.get("end").getInt("x"),
+                            position.get("end").getInt("y"),
+                            position.get("end").getInt("z")
+                        };
 
-                    for (int i = Math.min(corners[0], corners[3]); i <= Math.max(corners[0], corners[3]); i++) {
-                        for (int j = Math.min(corners[1], corners[4]); j <= Math.max(corners[1], corners[4]); j++) {
-                            for (int k = Math.min(corners[2], corners[5]); k <= Math.max(corners[2], corners[5]); k++) {
-                                builder.addBlock(new BlockPos(i, j, k), blocks[MathUtils.random(blocks.length - 1)]);
+                        for (int i = Math.min(corners[0], corners[3]); i <= Math.max(corners[0], corners[3]); i++) {
+                            for (int j = Math.min(corners[1], corners[4]); j <= Math.max(corners[1], corners[4]); j++) {
+                                for (int k = Math.min(corners[2], corners[5]); k <= Math.max(corners[2], corners[5]); k++) {
+                                    builder.addBlock(new BlockPos(i, j, k), blocks[MathUtils.random(blocks.length - 1)]);
+                                }
                             }
                         }
                     }
@@ -78,11 +80,15 @@ public class LevelLoader {
                 for (JsonValue single : singles) {
                     Block[] blocks = selectBlockPalette(root, single);
 
-                    builder.addBlock(new BlockPos(
-                        single.get("pos").getInt("x"),
-                        single.get("pos").getInt("y"),
-                        single.get("pos").getInt("z")
-                    ),  blocks[MathUtils.random(blocks.length - 1)]);
+                    for (JsonValue position : single.get("positions")) {
+                        builder.addBlock(new BlockPos(
+                            position.getInt("x"),
+                            position.getInt("y"),
+                            position.getInt("z")
+                        ),  blocks[MathUtils.random(blocks.length - 1)]);
+
+                    }
+
                 }
             }
 
@@ -103,17 +109,17 @@ public class LevelLoader {
     private static Block[] selectBlockPalette(JsonValue root, JsonValue currentObject) {
         Block[] blocks = new Block[0];
 
-        if (currentObject.getString("blocks").equals("block")) {
+        if (currentObject.getString("blocks_type").equals("block")) {
             blocks = new Block[]{Registries.BLOCKS.get(currentObject.getString("block"))};
 
-        } else if (currentObject.getString("blocks").equals("list")) {
+        } else if (currentObject.getString("blocks_type").equals("list")) {
             JsonValue list = currentObject.get("list");
             blocks = new Block[list.size];
             for (int i = 0; i < list.size; i++) {
                 blocks[i] = Registries.BLOCKS.get(list.getString(i));
             }
 
-        } else if (currentObject.getString("blocks").equals("pool")) {
+        } else if (currentObject.getString("blocks_type").equals("pool")) {
             JsonValue pools = root.get("pools");
             for (JsonValue pool : pools) {
                 if (pool.getString("name").equals(currentObject.getString("pool"))) {
