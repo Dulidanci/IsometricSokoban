@@ -55,7 +55,11 @@ public class IsometricSokoban implements ApplicationListener {
             screenManager.setScreen(screenManager.getScreen());
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
-            screenManager.setScreen(new LevelSelectorScreen());
+            if (screenManager.getScreen() instanceof LevelSelectorScreen) {
+                Gdx.app.exit();
+            } else {
+                screenManager.setScreen(new LevelSelectorScreen());
+            }
         }
         screenManager.render();
     }
@@ -72,6 +76,7 @@ public class IsometricSokoban implements ApplicationListener {
 
     @Override
     public void dispose() {
+        assetManager.dispose();
         screenManager.dispose();
     }
 
