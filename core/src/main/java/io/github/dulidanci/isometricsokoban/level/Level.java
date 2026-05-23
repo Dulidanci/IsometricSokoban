@@ -35,16 +35,16 @@ public class Level {
     }
 
     public void update() {
-        if (Gdx.input.isKeyJustPressed(Input.Keys.W)) {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.W) || Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
             player.move(this, Direction.FORWARDS);
         }
-        if (Gdx.input.isKeyJustPressed(Input.Keys.A)) {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.A) || Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) {
             player.move(this, Direction.LEFT);
         }
-        if (Gdx.input.isKeyJustPressed(Input.Keys.S)) {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.S) || Gdx.input.isKeyJustPressed(Input.Keys.DOWN)) {
             player.move(this, Direction.BACKWARDS);
         }
-        if (Gdx.input.isKeyJustPressed(Input.Keys.D)) {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.D) || Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) {
             player.move(this, Direction.RIGHT);
         }
 
