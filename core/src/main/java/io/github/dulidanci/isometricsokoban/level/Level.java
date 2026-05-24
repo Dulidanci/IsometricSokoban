@@ -9,7 +9,9 @@ import io.github.dulidanci.isometricsokoban.block.Block;
 import io.github.dulidanci.isometricsokoban.block.Blocks;
 import io.github.dulidanci.isometricsokoban.level.util.BlockPos;
 import io.github.dulidanci.isometricsokoban.level.util.Direction;
+import io.github.dulidanci.isometricsokoban.level.util.Step;
 import io.github.dulidanci.isometricsokoban.player.Player;
+import io.github.dulidanci.isometricsokoban.screen.LevelSelectorScreen;
 import io.github.dulidanci.isometricsokoban.util.Pair;
 
 import java.util.ArrayList;
@@ -23,6 +25,10 @@ public class Level {
     public final int length;
     private final Block[][][] map;
     private final Player player;
+    private boolean won;
+    private float wait;
+    private final ArrayList<ArrayList<Step>> steps = new ArrayList<>();
+    private final ArrayList<Step> currentSteps = new ArrayList<>();
 
     private Level(Builder builder) {
         this.level = builder.level;
@@ -32,45 +38,68 @@ public class Level {
 
         this.map = builder.map;
         this.player = builder.player;
+        this.won = false;
+        this.wait = 0;
     }
 
-    public void update() {
-        if (Gdx.input.isKeyJustPressed(Input.Keys.W) || Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
-            player.move(this, Direction.FORWARDS);
-        }
-        if (Gdx.input.isKeyJustPressed(Input.Keys.A) || Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) {
-            player.move(this, Direction.LEFT);
-        }
-        if (Gdx.input.isKeyJustPressed(Input.Keys.S) || Gdx.input.isKeyJustPressed(Input.Keys.DOWN)) {
-            player.move(this, Direction.BACKWARDS);
-        }
-        if (Gdx.input.isKeyJustPressed(Input.Keys.D) || Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) {
-            player.move(this, Direction.RIGHT);
-        }
+    public void update(float delta) {
+        currentSteps.clear();
+        if (won) {
+            wait += delta;
+            if (wait >= 1) {
+                IsometricSokoban.getInstance().getScreenManager().setScreen(new LevelSelectorScreen());
+            }
+        } else {
+            if (Gdx.input.isKeyJustPressed(Input.Keys.W) || Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
+                player.move(this, Direction.FORWARDS);
+            }
+            if (Gdx.input.isKeyJustPressed(Input.Keys.A) || Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) {
+                player.move(this, Direction.LEFT);
+            }
+            if (Gdx.input.isKeyJustPressed(Input.Keys.S) || Gdx.input.isKeyJustPressed(Input.Keys.DOWN)) {
+                player.move(this, Direction.BACKWARDS);
+            }
+            if (Gdx.input.isKeyJustPressed(Input.Keys.D) || Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) {
+                player.move(this, Direction.RIGHT);
+            }
 
-        boolean fail = false;
-        for (int i = 0; i < width; i++) {
-            for (int j = 0; j < height; j++) {
-                for (int k = 0; k < length; k++) {
-                    if (map[i][j][k] == Blocks.TARGET && (!validPosition(new BlockPos(i, j + 1, k)) || map[i][j + 1][k] != Blocks.BOX)) {
-                        fail = true;
+            if (!currentSteps.isEmpty()) {
+                steps.add(new ArrayList<>(currentSteps));
+            }
+
+            if (Gdx.input.isKeyJustPressed(Input.Keys.Y)) {
+                if (!steps.isEmpty()) {
+                    player.move(this, steps.getLast().getLast().inverse().stepDirection());
+                    for (int i = steps.getLast().size() - 2; i >= 0; i--) {
+                        move(steps.getLast().get(i).inverse());
+                    }
+                    steps.removeLast();
+                }
+            }
+
+            boolean fail = false;
+            for (int i = 0; i < width; i++) {
+                for (int j = 0; j < height; j++) {
+                    for (int k = 0; k < length; k++) {
+                        if (map[i][j][k] == Blocks.TARGET && (!validPosition(new BlockPos(i, j + 1, k)) || map[i][j + 1][k] != Blocks.BOX)) {
+                            fail = true;
+                        }
                     }
                 }
             }
-        }
 
-        if (!fail) {
-            System.out.println("YAY, You won!");
+            if (!fail) {
+                won = true;
+            }
         }
     }
 
-    public boolean move(BlockPos pos, Direction direction) {
-        BlockPos target = pos.add(direction.getVector());
-
-        if (validPosition(target)) {
-            if (!getBlock(target).isSolid() || (getBlock(target).isSolid() && getBlock(target).canBeMoved(this, target, direction))) {
-                setBlock(target, getBlock(pos));
-                setBlock(pos, Blocks.AIR);
+    public boolean move(Step step) {
+        if (validPosition(step.getTargetPos())) {
+            if (!getBlock(step.getTargetPos()).isSolid() || (getBlock(step.getTargetPos()).isSolid() && getBlock(step.getTargetPos()).canBeMoved(this, new Step(step.getTargetPos(), step.stepDirection())))) {
+                setBlock(step.getTargetPos(), getBlock(step.originalPos()));
+                setBlock(step.originalPos(), Blocks.AIR);
+                currentSteps.add(step);
                 return true;
             }
         }

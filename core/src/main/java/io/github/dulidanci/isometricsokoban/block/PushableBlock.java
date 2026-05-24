@@ -1,8 +1,7 @@
 package io.github.dulidanci.isometricsokoban.block;
 
 import io.github.dulidanci.isometricsokoban.level.Level;
-import io.github.dulidanci.isometricsokoban.level.util.BlockPos;
-import io.github.dulidanci.isometricsokoban.level.util.Direction;
+import io.github.dulidanci.isometricsokoban.level.util.Step;
 
 public class PushableBlock extends Block {
 
@@ -11,7 +10,7 @@ public class PushableBlock extends Block {
     }
 
     @Override
-    public boolean canBeMoved(Level level, BlockPos pos, Direction direction) {
-        return level.move(pos, direction);
+    public boolean canBeMoved(Level level, Step step) {
+        return level.move(step);
     }
 }

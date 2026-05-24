@@ -10,7 +10,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import io.github.dulidanci.isometricsokoban.IsometricSokoban;
-import io.github.dulidanci.isometricsokoban.render.Widget;
+import io.github.dulidanci.isometricsokoban.render.LevelSelectorWidget;
 
 import java.util.ArrayList;
 
@@ -18,7 +18,7 @@ public class LevelSelectorScreen implements Screen {
     private final SpriteBatch batch;
     private final BitmapFont font;
     private final ExtendViewport viewport;
-    private final ArrayList<Widget> widgets = new ArrayList<>();
+    private final ArrayList<LevelSelectorWidget> widgets = new ArrayList<>();
 
     public LevelSelectorScreen() {
         batch = new SpriteBatch();
@@ -27,7 +27,7 @@ public class LevelSelectorScreen implements Screen {
         viewport.getCamera().position.set(320, 240, 0);
 
         for (int i = 0; i < IsometricSokoban.MAX_LEVEL_COUNT; i++) {
-            widgets.add(new Widget(32 + i * 96, 384, 64, 64, i)
+            widgets.add(new LevelSelectorWidget(48 + (i % 6) * 96, 400 - (i / 6) * 96, 64, 64, i, "level_selector_button")
                 .setOnClick(this::onClick)
             );
         }
@@ -43,8 +43,8 @@ public class LevelSelectorScreen implements Screen {
         Vector2 mousePos = new Vector2(Gdx.input.getX(), Gdx.input.getY());
         viewport.unproject(mousePos);
 
-        for (Widget widget : widgets) {
-            widget.update(delta, mousePos);
+        for (LevelSelectorWidget levelSelectorWidget : widgets) {
+            levelSelectorWidget.update(mousePos);
         }
 
         ScreenUtils.clear(Color.TEAL);
@@ -53,8 +53,8 @@ public class LevelSelectorScreen implements Screen {
 
         batch.begin();
 
-        for (Widget widget : widgets) {
-            widget.render(delta, batch, font);
+        for (LevelSelectorWidget levelSelectorWidget : widgets) {
+            levelSelectorWidget.render(delta, batch, font);
         }
 
         batch.end();
@@ -89,7 +89,7 @@ public class LevelSelectorScreen implements Screen {
         widgets.clear();
     }
 
-    public void onClick(Widget widget) {
-        IsometricSokoban.getInstance().getScreenManager().setScreen(new LevelScreen(widget.number));
+    public void onClick(LevelSelectorWidget widget) {
+            IsometricSokoban.getInstance().getScreenManager().setScreen(new LevelScreen(widget.number));
     }
 }

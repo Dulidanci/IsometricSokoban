@@ -30,7 +30,7 @@ public class LevelScreen implements Screen {
     @Override
     public void render(float delta) {
         if (level != null) {
-            level.update();
+            level.update(delta);
         }
 
         ScreenUtils.clear(Color.TEAL);

@@ -38,7 +38,7 @@ public class IsometricSokoban implements ApplicationListener {
             assetManager.load(Objects.equals(name, "player") ?
                 ID + "/textures/player/" + name + ".png" :
                 ID + "/textures/blocks/" + name + ".png", Texture.class));
-        assetManager.load(ID + "/textures/widgets/button.png", Texture.class);
+        assetManager.load(ID + "/textures/widgets/level_selector_button.png", Texture.class);
         assetManager.finishLoading();
 
         screenManager.setScreen(new LevelSelectorScreen());

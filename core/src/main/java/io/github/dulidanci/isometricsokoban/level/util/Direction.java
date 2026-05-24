@@ -17,4 +17,8 @@ public enum Direction {
     public BlockPos getVector() {
         return vector;
     }
+
+    public Direction getOpposite() {
+        return Direction.values()[(ordinal() + 3) % Direction.values().length];
+    }
 }
