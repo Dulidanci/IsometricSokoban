@@ -1,6 +1,7 @@
 package io.github.dulidanci.isometricsokoban.screen;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -27,7 +28,7 @@ public class LevelSelectorScreen implements Screen {
         viewport.getCamera().position.set(320, 240, 0);
 
         for (int i = 0; i < IsometricSokoban.MAX_LEVEL_COUNT; i++) {
-            widgets.add(new LevelSelectorWidget(48 + (i % 6) * 96, 400 - (i / 6) * 96, 64, 64, i, "level_selector_button")
+            widgets.add(new LevelSelectorWidget(48 + (i % 6) * 96, 400 - (i / 6) * 96, 64, 64, i, "level_button")
                 .setOnClick(this::onClick)
             );
         }
@@ -40,6 +41,10 @@ public class LevelSelectorScreen implements Screen {
 
     @Override
     public void render(float delta) {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+            Gdx.app.exit();
+        }
+
         Vector2 mousePos = new Vector2(Gdx.input.getX(), Gdx.input.getY());
         viewport.unproject(mousePos);
 
@@ -54,7 +59,7 @@ public class LevelSelectorScreen implements Screen {
         batch.begin();
 
         for (LevelSelectorWidget levelSelectorWidget : widgets) {
-            levelSelectorWidget.render(delta, batch, font);
+            levelSelectorWidget.render(batch, font);
         }
 
         batch.end();

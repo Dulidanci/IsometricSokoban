@@ -3,7 +3,9 @@ package io.github.dulidanci.isometricsokoban.level;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
 import io.github.dulidanci.isometricsokoban.IsometricSokoban;
 import io.github.dulidanci.isometricsokoban.block.Block;
 import io.github.dulidanci.isometricsokoban.block.Blocks;
@@ -11,6 +13,9 @@ import io.github.dulidanci.isometricsokoban.level.util.BlockPos;
 import io.github.dulidanci.isometricsokoban.level.util.Direction;
 import io.github.dulidanci.isometricsokoban.level.util.Step;
 import io.github.dulidanci.isometricsokoban.player.Player;
+import io.github.dulidanci.isometricsokoban.render.LevelSelectorWidget;
+import io.github.dulidanci.isometricsokoban.render.Widget;
+import io.github.dulidanci.isometricsokoban.screen.LevelScreen;
 import io.github.dulidanci.isometricsokoban.screen.LevelSelectorScreen;
 import io.github.dulidanci.isometricsokoban.util.Pair;
 
@@ -25,10 +30,15 @@ public class Level {
     public final int length;
     private final Block[][][] map;
     private final Player player;
+    private boolean paused;
     private boolean won;
     private float wait;
+    private final ArrayList<Widget<?>> normalWidgets = new ArrayList<>();
+    private final ArrayList<Widget<?>> pauseWidgets = new ArrayList<>();
+    private final ArrayList<Widget<?>> winWidgets = new ArrayList<>();
     private final ArrayList<ArrayList<Step>> steps = new ArrayList<>();
     private final ArrayList<Step> currentSteps = new ArrayList<>();
+    private int moves;
 
     private Level(Builder builder) {
         this.level = builder.level;
@@ -38,58 +48,121 @@ public class Level {
 
         this.map = builder.map;
         this.player = builder.player;
+        this.paused = false;
         this.won = false;
         this.wait = 0;
-    }
+        this.moves = 0;
 
-    public void update(float delta) {
-        currentSteps.clear();
-        if (won) {
-            wait += delta;
-            if (wait >= 1) {
-                IsometricSokoban.getInstance().getScreenManager().setScreen(new LevelSelectorScreen());
-            }
-        } else {
-            if (Gdx.input.isKeyJustPressed(Input.Keys.W) || Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
-                player.move(this, Direction.FORWARDS);
-            }
-            if (Gdx.input.isKeyJustPressed(Input.Keys.A) || Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) {
-                player.move(this, Direction.LEFT);
-            }
-            if (Gdx.input.isKeyJustPressed(Input.Keys.S) || Gdx.input.isKeyJustPressed(Input.Keys.DOWN)) {
-                player.move(this, Direction.BACKWARDS);
-            }
-            if (Gdx.input.isKeyJustPressed(Input.Keys.D) || Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) {
-                player.move(this, Direction.RIGHT);
-            }
-
-            if (!currentSteps.isEmpty()) {
-                steps.add(new ArrayList<>(currentSteps));
-            }
-
-            if (Gdx.input.isKeyJustPressed(Input.Keys.Y)) {
+        this.normalWidgets.add(new Widget<>(576, 416, 64, 64, "restart_button_32")
+            .setOnClick(t -> {
+                IsometricSokoban.getInstance().getScreenManager().setScreen(IsometricSokoban.getInstance().getScreenManager().getScreen());
+            }));
+        this.normalWidgets.add(new Widget<>(512, 416, 64, 64, "undo_button")
+            .setOnClick(t -> {
                 if (!steps.isEmpty()) {
                     player.move(this, steps.getLast().getLast().inverse().stepDirection());
                     for (int i = steps.getLast().size() - 2; i >= 0; i--) {
                         move(steps.getLast().get(i).inverse());
                     }
                     steps.removeLast();
+                    moves--;
                 }
-            }
+            }));
 
-            boolean fail = false;
-            for (int i = 0; i < width; i++) {
-                for (int j = 0; j < height; j++) {
-                    for (int k = 0; k < length; k++) {
-                        if (map[i][j][k] == Blocks.TARGET && (!validPosition(new BlockPos(i, j + 1, k)) || map[i][j + 1][k] != Blocks.BOX)) {
-                            fail = true;
+        this.pauseWidgets.add(new LevelSelectorWidget(184, 176, 272, 124, -1, "level_button"));
+        this.pauseWidgets.add(new Widget<>(244, 184, 48, 48, "level_selector_button")
+            .setVisible(false)
+            .setOnClick(t -> {
+                IsometricSokoban.getInstance().getScreenManager().setScreen(new LevelSelectorScreen());
+            }));
+        this.pauseWidgets.add(new Widget<>(348, 184, 48, 48, "restart_button")
+            .setVisible(false)
+            .setOnClick(t -> {
+                IsometricSokoban.getInstance().getScreenManager().setScreen(IsometricSokoban.getInstance().getScreenManager().getScreen());
+            }));
+
+        boolean notLast = level + 1 < IsometricSokoban.MAX_LEVEL_COUNT;
+
+        this.winWidgets.add(new LevelSelectorWidget(184, 176, 272, 128, -1, "level_button"));
+        this.winWidgets.add(new Widget<>(notLast ? 218 : 244, 184, 48, 48, "level_selector_button")
+            .setVisible(false)
+            .setOnClick(t -> {
+                IsometricSokoban.getInstance().getScreenManager().setScreen(new LevelSelectorScreen());
+            }));
+        this.winWidgets.add(new Widget<>(notLast ? 296 : 348, 184, 48, 48, "restart_button")
+            .setVisible(false)
+            .setOnClick(t -> {
+                IsometricSokoban.getInstance().getScreenManager().setScreen(IsometricSokoban.getInstance().getScreenManager().getScreen());
+            }));
+        if (notLast) {
+            this.winWidgets.add(new Widget<>(374, 184, 48, 48, "next_level_button")
+                .setVisible(false)
+                .setOnClick(t -> {
+                    IsometricSokoban.getInstance().getScreenManager().setScreen(new LevelScreen(level + 1));
+                }));
+        }
+    }
+
+    public void update(float delta, Vector2 mousePos) {
+        currentSteps.clear();
+        if (won) {
+            if (wait < 1) {
+                wait += delta;
+            } else {
+                winWidgets.forEach(widget -> widget.setVisible(true));
+            }
+            winWidgets.forEach(widget -> widget.update(mousePos));
+        } else {
+            if (paused) {
+                if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+                    resume();
+                }
+                pauseWidgets.forEach(widget -> widget.update(mousePos));
+            } else {
+                if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+                    pause();
+                }
+                if (Gdx.input.isKeyJustPressed(Input.Keys.W) || Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
+                    if (player.move(this, Direction.FORWARDS)) {
+                        moves++;
+                    }
+                }
+                if (Gdx.input.isKeyJustPressed(Input.Keys.A) || Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) {
+                    if (player.move(this, Direction.LEFT)) {
+                        moves++;
+                    }
+                }
+                if (Gdx.input.isKeyJustPressed(Input.Keys.S) || Gdx.input.isKeyJustPressed(Input.Keys.DOWN)) {
+                    if (player.move(this, Direction.BACKWARDS)) {
+                        moves++;
+                    }
+                }
+                if (Gdx.input.isKeyJustPressed(Input.Keys.D) || Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) {
+                    if (player.move(this, Direction.RIGHT)) {
+                        moves++;
+                    }
+                }
+
+                if (!currentSteps.isEmpty()) {
+                    steps.add(new ArrayList<>(currentSteps));
+                }
+
+                normalWidgets.forEach(widget -> widget.update(mousePos));
+
+                boolean fail = false;
+                for (int i = 0; i < width; i++) {
+                    for (int j = 0; j < height; j++) {
+                        for (int k = 0; k < length; k++) {
+                            if (map[i][j][k] == Blocks.TARGET && (!validPosition(new BlockPos(i, j + 1, k)) || map[i][j + 1][k] != Blocks.BOX)) {
+                                fail = true;
+                            }
                         }
                     }
                 }
-            }
 
-            if (!fail) {
-                won = true;
+                if (!fail) {
+                    won = true;
+                }
             }
         }
     }
@@ -119,7 +192,17 @@ public class Level {
         map[pos.x()][pos.y()][pos.z()] = block;
     }
 
-    public void render(SpriteBatch batch) {
+    public void pause() {
+        this.paused = true;
+        pauseWidgets.forEach(widget -> widget.setVisible(true));
+    }
+
+    public void resume() {
+        this.paused = false;
+        pauseWidgets.forEach(widget -> widget.setVisible(false));
+    }
+
+    public void render(SpriteBatch batch, BitmapFont font) {
         ArrayList<Pair<BlockPos, Block>> blocks = new ArrayList<>();
 
         for (int i = 0; i < this.width; i++) {
@@ -149,6 +232,32 @@ public class Level {
                     36, 44
                 );
             }
+        }
+
+        font.draw(batch, "Level: " + (level + 1) + "\nMoves: " + moves + "\nBest solution: ", 32, 448);
+
+        normalWidgets.forEach(widget -> widget.render(batch, font));
+
+        if (paused) {
+            batch.draw(IsometricSokoban.getInstance().getAssetManager().get(
+                IsometricSokoban.ID + "/textures/widgets/overlay.png", Texture.class),
+                320 - (float) Gdx.graphics.getWidth() / 2, 240 - (float) Gdx.graphics.getHeight() / 2,
+                Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+            pauseWidgets.forEach(widget -> widget.render(batch, font));
+            batch.draw(IsometricSokoban.getInstance().getAssetManager().get(
+                IsometricSokoban.ID + "/textures/widgets/paused.png", Texture.class),
+                192, 232, 256, 128);
+        }
+
+        if (won && wait >= 1) {
+            batch.draw(IsometricSokoban.getInstance().getAssetManager().get(
+                    IsometricSokoban.ID + "/textures/widgets/overlay.png", Texture.class),
+                320 - (float) Gdx.graphics.getWidth() / 2, 240 - (float) Gdx.graphics.getHeight() / 2,
+                Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+            winWidgets.forEach(widget -> widget.render(batch, font));
+            batch.draw(IsometricSokoban.getInstance().getAssetManager().get(
+                    IsometricSokoban.ID + "/textures/widgets/you_win.png", Texture.class),
+                192, 232, 256, 128);
         }
     }
 

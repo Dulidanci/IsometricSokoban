@@ -1,8 +1,6 @@
 package io.github.dulidanci.isometricsokoban;
 
 import com.badlogic.gdx.ApplicationListener;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import io.github.dulidanci.isometricsokoban.block.Blocks;
@@ -38,7 +36,15 @@ public class IsometricSokoban implements ApplicationListener {
             assetManager.load(Objects.equals(name, "player") ?
                 ID + "/textures/player/" + name + ".png" :
                 ID + "/textures/blocks/" + name + ".png", Texture.class));
+        assetManager.load(ID + "/textures/widgets/level_button.png", Texture.class);
         assetManager.load(ID + "/textures/widgets/level_selector_button.png", Texture.class);
+        assetManager.load(ID + "/textures/widgets/restart_button.png", Texture.class);
+        assetManager.load(ID + "/textures/widgets/restart_button_32.png", Texture.class);
+        assetManager.load(ID + "/textures/widgets/undo_button.png", Texture.class);
+        assetManager.load(ID + "/textures/widgets/next_level_button.png", Texture.class);
+        assetManager.load(ID + "/textures/widgets/overlay.png", Texture.class);
+        assetManager.load(ID + "/textures/widgets/paused.png", Texture.class);
+        assetManager.load(ID + "/textures/widgets/you_win.png", Texture.class);
         assetManager.finishLoading();
 
         screenManager.setScreen(new LevelSelectorScreen());
@@ -51,16 +57,6 @@ public class IsometricSokoban implements ApplicationListener {
 
     @Override
     public void render() {
-        if (Gdx.input.isKeyJustPressed(Input.Keys.R)) {
-            screenManager.setScreen(screenManager.getScreen());
-        }
-        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
-            if (screenManager.getScreen() instanceof LevelSelectorScreen) {
-                Gdx.app.exit();
-            } else {
-                screenManager.setScreen(new LevelSelectorScreen());
-            }
-        }
         screenManager.render();
     }
 

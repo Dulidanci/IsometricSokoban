@@ -14,10 +14,12 @@ public class Player {
         this.direction = Direction.BACKWARDS;
     }
 
-    public void move(Level level, Direction direction) {
+    public boolean move(Level level, Direction direction) {
         if (level.validPosition(pos.add(direction.getVector()).add(Direction.DOWN.getVector())) && level.getBlock(pos.add(direction.getVector()).add(Direction.DOWN.getVector())).isSolid() && level.move(new Step(pos, direction))) {
             this.direction = direction;
             pos = pos.add(direction.getVector());
+            return true;
         }
+        return false;
     }
 }
