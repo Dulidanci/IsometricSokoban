@@ -22,4 +22,12 @@ public class Player {
         }
         return false;
     }
+
+    public BlockPos getPos() {
+        return pos;
+    }
+
+    public void synchronizePosition(BlockPos pos) {
+        this.pos = pos;
+    }
 }

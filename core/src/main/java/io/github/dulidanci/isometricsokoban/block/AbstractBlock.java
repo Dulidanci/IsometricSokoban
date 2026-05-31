@@ -13,4 +13,9 @@ public abstract class AbstractBlock {
     public abstract boolean isSolid();
     public abstract boolean canBeMoved(Level level, Step step);
     public abstract boolean visible();
+
+    @Override
+    public String toString() {
+        return "Blocks." + id;
+    }
 }

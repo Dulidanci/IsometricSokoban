@@ -80,27 +80,37 @@
           }
         }
       ]
+    },
+    {
+      "blocks_type": "block",
+      "block": "air",
+      "positions": [
+        {
+          "start":
+          {
+            "x": 1,
+            "y": 0,
+            "z": 5
+          },
+          "end":
+          {
+            "x": 6,
+            "y": 0,
+            "z": 5
+          }
+        }
+      ]
     }
   ],
   "singles": [
     {
-      "blocks_type": "block",
-      "block": "box",
+      "blocks_type": "pool",
+      "pool": "floor",
       "positions": [
         {
           "x": 4,
-          "y": 1,
-          "z": 2
-        },
-        {
-          "x": 2,
-          "y": 1,
-          "z": 4
-        },
-        {
-          "x": 2,
-          "y": 1,
-          "z": 2
+          "y": 0,
+          "z": 5
         }
       ]
     },
@@ -109,38 +119,39 @@
       "block": "target",
       "positions": [
         {
-          "x": 5,
-          "y": 0,
-          "z": 4
-        },
-        {
           "x": 4,
           "y": 0,
-          "z": 5
-        },
-        {
-          "x": 3,
-          "y": 0,
-          "z": 3
+          "z": 6
         }
       ]
     },
     {
       "blocks_type": "block",
-      "block": "wall",
+      "block": "spike_block",
       "positions": [
         {
           "x": 4,
-          "y": 1,
+          "y": 0,
           "z": 4
+        }
+      ]
+    },
+    {
+      "blocks_type": "block",
+      "block": "box",
+      "positions": [
+        {
+          "x": 3,
+          "y": 1,
+          "z": 3
         }
       ]
     }
   ],
   "player":
   {
-    "x": 3,
+    "x": 6,
     "y": 1,
-    "z": 3
+    "z": 2
   }
 }

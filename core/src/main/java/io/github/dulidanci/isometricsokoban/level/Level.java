@@ -10,6 +10,7 @@ import io.github.dulidanci.isometricsokoban.IsometricSokoban;
 import io.github.dulidanci.isometricsokoban.block.Block;
 import io.github.dulidanci.isometricsokoban.block.Blocks;
 import io.github.dulidanci.isometricsokoban.level.util.BlockPos;
+import io.github.dulidanci.isometricsokoban.level.util.ChangeEntry;
 import io.github.dulidanci.isometricsokoban.level.util.Direction;
 import io.github.dulidanci.isometricsokoban.level.util.Step;
 import io.github.dulidanci.isometricsokoban.player.Player;
@@ -32,13 +33,17 @@ public class Level {
     private final Player player;
     private boolean paused;
     private boolean won;
+    private boolean dead;
     private float wait;
     private final ArrayList<Widget<?>> normalWidgets = new ArrayList<>();
     private final ArrayList<Widget<?>> pauseWidgets = new ArrayList<>();
     private final ArrayList<Widget<?>> winWidgets = new ArrayList<>();
-    private final ArrayList<ArrayList<Step>> steps = new ArrayList<>();
-    private final ArrayList<Step> currentSteps = new ArrayList<>();
+    private final ArrayList<ArrayList<ChangeEntry>> steps = new ArrayList<>();
+    private final ArrayList<ChangeEntry> currentSteps = new ArrayList<>();
     private int moves;
+    public static final int SPIKE_ACTIVATION_TURNS = 5;
+    private boolean stabbing;
+
 
     private Level(Builder builder) {
         this.level = builder.level;
@@ -50,8 +55,10 @@ public class Level {
         this.player = builder.player;
         this.paused = false;
         this.won = false;
+        this.dead = false;
         this.wait = 0;
         this.moves = 0;
+        this.stabbing = false;
 
         this.normalWidgets.add(new Widget<>(576, 416, 64, 64, "restart_button_32")
             .setOnClick(t -> {
@@ -60,12 +67,16 @@ public class Level {
         this.normalWidgets.add(new Widget<>(512, 416, 64, 64, "undo_button")
             .setOnClick(t -> {
                 if (!steps.isEmpty()) {
-                    player.move(this, steps.getLast().getLast().inverse().stepDirection());
-                    for (int i = steps.getLast().size() - 2; i >= 0; i--) {
-                        move(steps.getLast().get(i).inverse());
+                    for (int i = steps.getLast().size() - 1; i >= 0; i--) {
+                        setBlock(steps.getLast().get(i).blockPos(), steps.getLast().get(i).oldBlock());
+                        if (steps.getLast().get(i).oldBlock() == Blocks.PLAYER) {
+                            player.synchronizePosition(steps.getLast().get(i).blockPos());
+                        }
                     }
                     steps.removeLast();
                     moves--;
+                    stabbing = moves % SPIKE_ACTIVATION_TURNS == 0 && moves > 0;
+                    dead = false;
                 }
             }));
 
@@ -122,28 +133,63 @@ public class Level {
                 if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
                     pause();
                 }
-                if (Gdx.input.isKeyJustPressed(Input.Keys.W) || Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
-                    if (player.move(this, Direction.FORWARDS)) {
-                        moves++;
+                if (!dead) {
+                    if (Gdx.input.isKeyJustPressed(Input.Keys.W) || Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
+                        if (player.move(this, Direction.FORWARDS)) {
+                            moves++;
+                        }
                     }
-                }
-                if (Gdx.input.isKeyJustPressed(Input.Keys.A) || Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) {
-                    if (player.move(this, Direction.LEFT)) {
-                        moves++;
+                    if (Gdx.input.isKeyJustPressed(Input.Keys.A) || Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) {
+                        if (player.move(this, Direction.LEFT)) {
+                            moves++;
+                        }
                     }
-                }
-                if (Gdx.input.isKeyJustPressed(Input.Keys.S) || Gdx.input.isKeyJustPressed(Input.Keys.DOWN)) {
-                    if (player.move(this, Direction.BACKWARDS)) {
-                        moves++;
+                    if (Gdx.input.isKeyJustPressed(Input.Keys.S) || Gdx.input.isKeyJustPressed(Input.Keys.DOWN)) {
+                        if (player.move(this, Direction.BACKWARDS)) {
+                            moves++;
+                        }
                     }
-                }
-                if (Gdx.input.isKeyJustPressed(Input.Keys.D) || Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) {
-                    if (player.move(this, Direction.RIGHT)) {
-                        moves++;
+                    if (Gdx.input.isKeyJustPressed(Input.Keys.D) || Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) {
+                        if (player.move(this, Direction.RIGHT)) {
+                            moves++;
+                        }
                     }
                 }
 
                 if (!currentSteps.isEmpty()) {
+                    if (moves % SPIKE_ACTIVATION_TURNS == 0 && moves > 0) {
+                        stabbing = true;
+                        for (int i = 0; i < width; i++) {
+                            for (int j = 0; j < height; j++) {
+                                for (int k = 0; k < length; k++) {
+                                    if (map[i][j][k] == Blocks.SPIKE_BLOCK) {
+                                        BlockPos pos = new BlockPos(i, j + 1, k);
+                                        ChangeEntry entry = new ChangeEntry(pos, getBlock(pos), Blocks.SPIKES);
+                                        if (getBlock(pos) == Blocks.PLAYER) {
+                                            dead = true;
+                                        }
+                                        setBlock(pos, Blocks.SPIKES);
+                                        currentSteps.add(entry);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    if (moves % SPIKE_ACTIVATION_TURNS == 1 && moves > 1) {
+                        stabbing = false;
+                        for (int i = 0; i < width; i++) {
+                            for (int j = 0; j < height; j++) {
+                                for (int k = 0; k < length; k++) {
+                                    if (map[i][j][k] == Blocks.SPIKES) {
+                                        BlockPos pos = new BlockPos(i, j, k);
+                                        ChangeEntry entry = new ChangeEntry(pos, getBlock(pos), Blocks.AIR);
+                                        setBlock(pos, Blocks.AIR);
+                                        currentSteps.add(entry);
+                                    }
+                                }
+                            }
+                        }
+                    }
                     steps.add(new ArrayList<>(currentSteps));
                 }
 
@@ -169,10 +215,17 @@ public class Level {
 
     public boolean move(Step step) {
         if (validPosition(step.getTargetPos())) {
-            if (!getBlock(step.getTargetPos()).isSolid() || (getBlock(step.getTargetPos()).isSolid() && getBlock(step.getTargetPos()).canBeMoved(this, new Step(step.getTargetPos(), step.stepDirection())))) {
+            if (!getBlock(step.getTargetPos()).isSolid() || (getBlock(step.getTargetPos()).isSolid()
+                && getBlock(step.getTargetPos()).canBeMoved(this, new Step(step.getTargetPos(), step.stepDirection())))) {
+
+                ChangeEntry target = new ChangeEntry(step.getTargetPos(), getBlock(step.getTargetPos()), getBlock(step.originalPos()));
                 setBlock(step.getTargetPos(), getBlock(step.originalPos()));
+                currentSteps.add(target);
+
+                ChangeEntry original = new ChangeEntry(step.originalPos(), getBlock(step.originalPos()), Blocks.AIR);
                 setBlock(step.originalPos(), Blocks.AIR);
-                currentSteps.add(step);
+                currentSteps.add(original);
+
                 return true;
             }
         }
@@ -210,6 +263,9 @@ public class Level {
                 for (int k = 0; k < this.length; k++) {
                     if (map[i][j][k].visible()) {
                         blocks.add(Pair.of(new BlockPos(i, j, k), map[i][j][k]));
+                        if (map[i][j][k] == Blocks.SPIKE_BLOCK && stabbing) {
+                            blocks.add(Pair.of(new BlockPos(i, j, k).add(Direction.UP.getVector()), Blocks.SPIKES));
+                        }
                     }
                 }
             }
@@ -218,18 +274,18 @@ public class Level {
         blocks.sort(Comparator.comparing(pair -> pair.getFirst().x() + pair.getFirst().y() + pair.getFirst().z()));
 
         for (Pair<BlockPos, Block> pair : blocks) {
-            if (pair.getSecond() != Blocks.PLAYER) {
+            if (pair.getSecond() == Blocks.PLAYER) {
+                batch.draw(IsometricSokoban.getInstance().getAssetManager().get(IsometricSokoban.ID + "/textures/player/player.png", Texture.class),
+                    302 + pair.getFirst().x() * 32 - pair.getFirst().z() * 32,
+                    218 - pair.getFirst().x() * 16 + pair.getFirst().y() * 32 - pair.getFirst().z() * 16,
+                    36, 44
+                );
+            } else {
                 batch.draw(
                     IsometricSokoban.getInstance().getAssetManager().get(IsometricSokoban.ID + "/textures/blocks/" + pair.getSecond().id + ".png", Texture.class),
                     288 + pair.getFirst().x() * 32 - pair.getFirst().z() * 32,
                     208 - pair.getFirst().x() * 16 + pair.getFirst().y() * 32 - pair.getFirst().z() * 16,
                     2 * 32, 2 * 32
-                );
-            } else {
-                batch.draw(IsometricSokoban.getInstance().getAssetManager().get(IsometricSokoban.ID + "/textures/player/player.png", Texture.class),
-                    302 + pair.getFirst().x() * 32 - pair.getFirst().z() * 32,
-                    218 - pair.getFirst().x() * 16 + pair.getFirst().y() * 32 - pair.getFirst().z() * 16,
-                    36, 44
                 );
             }
         }
@@ -237,6 +293,12 @@ public class Level {
         font.draw(batch, "Level: " + (level + 1) + "\nMoves: " + moves + "\nBest solution: ", 32, 448);
 
         normalWidgets.forEach(widget -> widget.render(batch, font));
+
+        if (dead) {
+            batch.draw(IsometricSokoban.getInstance().getAssetManager().get(
+                IsometricSokoban.ID + "/textures/widgets/dead.png", Texture.class),
+                256, 416, 128, 64);
+        }
 
         if (paused) {
             batch.draw(IsometricSokoban.getInstance().getAssetManager().get(

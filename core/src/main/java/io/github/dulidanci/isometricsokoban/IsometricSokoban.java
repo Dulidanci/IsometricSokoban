@@ -15,7 +15,7 @@ public class IsometricSokoban implements ApplicationListener {
     private static IsometricSokoban instance;
     private ScreenManager screenManager;
     private AssetManager assetManager;
-    public static final int MAX_LEVEL_COUNT = 3;
+    public static final int MAX_LEVEL_COUNT = 4;
 
     private IsometricSokoban() {}
 
@@ -45,6 +45,7 @@ public class IsometricSokoban implements ApplicationListener {
         assetManager.load(ID + "/textures/widgets/overlay.png", Texture.class);
         assetManager.load(ID + "/textures/widgets/paused.png", Texture.class);
         assetManager.load(ID + "/textures/widgets/you_win.png", Texture.class);
+        assetManager.load(ID + "/textures/widgets/dead.png", Texture.class);
         assetManager.finishLoading();
 
         screenManager.setScreen(new LevelSelectorScreen());
