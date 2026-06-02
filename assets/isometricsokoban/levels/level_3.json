@@ -153,5 +153,6 @@
     "x": 6,
     "y": 1,
     "z": 2
-  }
+  },
+  "spike_activation_turns": 5
 }

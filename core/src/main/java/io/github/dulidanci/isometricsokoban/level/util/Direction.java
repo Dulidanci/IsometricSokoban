@@ -19,7 +19,7 @@ public enum Direction {
         return vector;
     }
 
-    public Direction getOpposite() {
-        return Direction.values()[(ordinal() + 3) % Direction.values().length];
+    public boolean isHorizontal() {
+        return this == BACKWARDS || this == FORWARDS || this == LEFT || this == RIGHT;
     }
 }

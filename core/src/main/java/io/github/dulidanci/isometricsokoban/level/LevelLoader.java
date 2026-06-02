@@ -98,6 +98,10 @@ public class LevelLoader {
                 root.get("player").getInt("z")
             ));
 
+            if (root.get("spike_activation_turns") != null) {
+                builder.setSpikeActivationTurns(root.getInt("spike_activation_turns"));
+            }
+
             return builder.build();
 
         } catch (Exception e) {

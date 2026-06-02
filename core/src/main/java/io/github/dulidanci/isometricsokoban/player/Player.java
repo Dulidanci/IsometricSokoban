@@ -11,12 +11,14 @@ public class Player {
 
     public Player(BlockPos pos) {
         this.pos = pos;
-        this.direction = Direction.BACKWARDS;
+        this.direction = Direction.FORWARDS;
     }
 
     public boolean move(Level level, Direction direction) {
         if (level.validPosition(pos.add(direction.getVector()).add(Direction.DOWN.getVector())) && level.getBlock(pos.add(direction.getVector()).add(Direction.DOWN.getVector())).isSolid() && level.move(new Step(pos, direction))) {
-            this.direction = direction;
+            if (direction.isHorizontal()) {
+                this.direction = direction;
+            }
             pos = pos.add(direction.getVector());
             return true;
         }
@@ -25,5 +27,9 @@ public class Player {
 
     public void synchronizePosition(BlockPos pos) {
         this.pos = pos;
+    }
+
+    public Direction getDirection() {
+        return direction;
     }
 }

@@ -16,7 +16,7 @@ public class LevelScreen implements Screen {
     public final SpriteBatch batch;
     public final BitmapFont font;
     public final ExtendViewport viewport;
-    public int number;
+    public final int number;
     public Level level;
 
     public LevelScreen(int level) {

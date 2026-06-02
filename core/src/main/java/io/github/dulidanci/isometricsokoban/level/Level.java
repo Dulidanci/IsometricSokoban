@@ -41,7 +41,7 @@ public class Level {
     private final ArrayList<ArrayList<ChangeEntry>> steps = new ArrayList<>();
     private final ArrayList<ChangeEntry> currentSteps = new ArrayList<>();
     private int moves;
-    public static final int SPIKE_ACTIVATION_TURNS = 5;
+    public final int SPIKE_ACTIVATION_TURNS;
     private boolean stabbing;
 
 
@@ -53,6 +53,8 @@ public class Level {
 
         this.map = builder.map;
         this.player = builder.player;
+        this.SPIKE_ACTIVATION_TURNS = builder.SPIKE_ACTIVATION_TURNS;
+
         this.paused = false;
         this.won = false;
         this.dead = false;
@@ -61,9 +63,7 @@ public class Level {
         this.stabbing = false;
 
         this.normalWidgets.add(new Widget<>(576, 416, 64, 64, "restart_button_32")
-            .setOnClick(t -> {
-                IsometricSokoban.getInstance().getScreenManager().setScreen(IsometricSokoban.getInstance().getScreenManager().getScreen());
-            }));
+            .setOnClick(t -> IsometricSokoban.getInstance().getScreenManager().setScreen(IsometricSokoban.getInstance().getScreenManager().getScreen())));
         this.normalWidgets.add(new Widget<>(512, 416, 64, 64, "undo_button")
             .setOnClick(t -> {
                 if (!steps.isEmpty()) {
@@ -83,34 +83,24 @@ public class Level {
         this.pauseWidgets.add(new LevelSelectorWidget(184, 176, 272, 124, -1, "level_button"));
         this.pauseWidgets.add(new Widget<>(244, 184, 48, 48, "level_selector_button")
             .setVisible(false)
-            .setOnClick(t -> {
-                IsometricSokoban.getInstance().getScreenManager().setScreen(new LevelSelectorScreen());
-            }));
+            .setOnClick(t -> IsometricSokoban.getInstance().getScreenManager().setScreen(new LevelSelectorScreen())));
         this.pauseWidgets.add(new Widget<>(348, 184, 48, 48, "restart_button")
             .setVisible(false)
-            .setOnClick(t -> {
-                IsometricSokoban.getInstance().getScreenManager().setScreen(IsometricSokoban.getInstance().getScreenManager().getScreen());
-            }));
+            .setOnClick(t -> IsometricSokoban.getInstance().getScreenManager().setScreen(IsometricSokoban.getInstance().getScreenManager().getScreen())));
 
         boolean notLast = level + 1 < IsometricSokoban.MAX_LEVEL_COUNT;
 
         this.winWidgets.add(new LevelSelectorWidget(184, 176, 272, 128, -1, "level_button"));
         this.winWidgets.add(new Widget<>(notLast ? 218 : 244, 184, 48, 48, "level_selector_button")
             .setVisible(false)
-            .setOnClick(t -> {
-                IsometricSokoban.getInstance().getScreenManager().setScreen(new LevelSelectorScreen());
-            }));
+            .setOnClick(t -> IsometricSokoban.getInstance().getScreenManager().setScreen(new LevelSelectorScreen())));
         this.winWidgets.add(new Widget<>(notLast ? 296 : 348, 184, 48, 48, "restart_button")
             .setVisible(false)
-            .setOnClick(t -> {
-                IsometricSokoban.getInstance().getScreenManager().setScreen(IsometricSokoban.getInstance().getScreenManager().getScreen());
-            }));
+            .setOnClick(t -> IsometricSokoban.getInstance().getScreenManager().setScreen(IsometricSokoban.getInstance().getScreenManager().getScreen())));
         if (notLast) {
             this.winWidgets.add(new Widget<>(374, 184, 48, 48, "next_level_button")
                 .setVisible(false)
-                .setOnClick(t -> {
-                    IsometricSokoban.getInstance().getScreenManager().setScreen(new LevelScreen(level + 1));
-                }));
+                .setOnClick(t -> IsometricSokoban.getInstance().getScreenManager().setScreen(new LevelScreen(level + 1))));
         }
     }
 
@@ -275,10 +265,12 @@ public class Level {
 
         for (Pair<BlockPos, Block> pair : blocks) {
             if (pair.getSecond() == Blocks.PLAYER) {
-                batch.draw(IsometricSokoban.getInstance().getAssetManager().get(IsometricSokoban.ID + "/textures/player/player.png", Texture.class),
+                Texture texture = IsometricSokoban.getInstance().getAssetManager().get(IsometricSokoban.ID + "/textures/player/player.png", Texture.class);
+                batch.draw(texture,
                     302 + pair.getFirst().x() * 32 - pair.getFirst().z() * 32,
                     218 - pair.getFirst().x() * 16 + pair.getFirst().y() * 32 - pair.getFirst().z() * 16,
-                    36, 44
+                    36, 44, 0, 0, texture.getWidth(), texture.getHeight(),
+                    player.getDirection() == Direction.LEFT || player.getDirection() == Direction.BACKWARDS, false
                 );
             } else {
                 batch.draw(
@@ -330,6 +322,7 @@ public class Level {
         public final int length;
         public final Block[][][] map;
         public Player player;
+        public int SPIKE_ACTIVATION_TURNS;
 
         public Builder(int level, int width, int height, int length) {
             this.level = level;
@@ -338,6 +331,7 @@ public class Level {
             this.length = length;
 
             this.map = new Block[width][height][length];
+            this.setSpikeActivationTurns(5);
         }
 
         public Builder addBlock(BlockPos blockPos, Block block) {
@@ -352,6 +346,14 @@ public class Level {
         public Builder setPlayer(BlockPos blockPos) {
             player = new Player(blockPos);
             map[blockPos.x()][blockPos.y()][blockPos.z()] = Blocks.PLAYER;
+            return this;
+        }
+
+        public Builder setSpikeActivationTurns(int turns) {
+            if (turns <= 0) {
+                throw new IllegalArgumentException("Spike activation turns must be positive");
+            }
+            SPIKE_ACTIVATION_TURNS = turns;
             return this;
         }
 
