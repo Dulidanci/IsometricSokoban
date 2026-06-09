@@ -1,8 +1,8 @@
 {
   "size": {
-    "width": 5,
+    "width": 6,
     "height": 5,
-    "length": 8
+    "length": 6
   },
   "pools": [
     {
@@ -16,11 +16,7 @@
       "name": "wall",
       "list": [
         "wall",
-        "wall",
-        "wall",
-        "wall",
-        "wall",
-        "mossy_wall"
+        "flowery_wall"
       ]
     }
   ],
@@ -30,17 +26,15 @@
       "pool": "floor",
       "positions": [
         {
-          "start":
-          {
-            "x": 1,
+          "start": {
+            "x": 2,
             "y": 0,
             "z": 1
           },
-          "end":
-          {
-            "x": 4,
+          "end": {
+            "x": 5,
             "y": 0,
-            "z": 7
+            "z": 5
           }
         }
       ]
@@ -50,51 +44,45 @@
       "pool": "wall",
       "positions": [
         {
-          "start":
-          {
+          "start": {
             "x": 0,
             "y": 0,
             "z": 0
           },
-          "end":
-          {
-            "x": 4,
+          "end": {
+            "x": 5,
             "y": 4,
             "z": 0
           }
         },
         {
-          "start":
-          {
+          "start": {
             "x": 0,
             "y": 0,
-            "z": 1
+            "z": 0
           },
-          "end":
-          {
+          "end": {
             "x": 0,
             "y": 4,
-            "z": 7
+            "z": 5
           }
         }
       ]
     },
     {
       "blocks_type": "block",
-      "block": "air",
+      "block": "box",
       "positions": [
         {
-          "start":
-          {
-            "x": 3,
-            "y": 0,
-            "z": 2
+          "start": {
+            "x": 2,
+            "y": 1,
+            "z": 3
           },
-          "end":
-          {
+          "end": {
             "x": 4,
-            "y": 0,
-            "z": 7
+            "y": 1,
+            "z": 3
           }
         }
       ]
@@ -103,17 +91,27 @@
   "singles": [
     {
       "blocks_type": "block",
-      "block": "box",
+      "block": "air",
       "positions": [
         {
-          "x": 1,
-          "y": 1,
+          "x": 3,
+          "y": 0,
           "z": 2
         },
         {
-          "x": 2,
-          "y": 1,
-          "z": 6
+          "x": 4,
+          "y": 0,
+          "z": 2
+        },
+        {
+          "x": 3,
+          "y": 0,
+          "z": 4
+        },
+        {
+          "x": 4,
+          "y": 0,
+          "z": 4
         }
       ]
     },
@@ -124,20 +122,24 @@
         {
           "x": 1,
           "y": 0,
-          "z": 7
+          "z": 1
         },
         {
-          "x": 2,
+          "x": 1,
           "y": 0,
-          "z": 2
+          "z": 5
+        },
+        {
+          "x": 5,
+          "y": 0,
+          "z": 3
         }
       ]
     }
   ],
-  "player":
-  {
-    "x": 4,
+  "player": {
+    "x": 5,
     "y": 1,
-    "z": 1
+    "z": 3
   }
 }

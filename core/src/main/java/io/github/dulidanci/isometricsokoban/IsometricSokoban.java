@@ -15,7 +15,7 @@ public class IsometricSokoban implements ApplicationListener {
     private static IsometricSokoban instance;
     private ScreenManager screenManager;
     private AssetManager assetManager;
-    public static final int MAX_LEVEL_COUNT = 4;
+    public static final int MAX_LEVEL_COUNT = 12;
 
     private IsometricSokoban() {}
 

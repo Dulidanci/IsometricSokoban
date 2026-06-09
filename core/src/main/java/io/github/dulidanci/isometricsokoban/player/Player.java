@@ -15,7 +15,7 @@ public class Player {
     }
 
     public boolean move(Level level, Direction direction) {
-        if (level.validPosition(pos.add(direction.getVector()).add(Direction.DOWN.getVector())) && level.getBlock(pos.add(direction.getVector()).add(Direction.DOWN.getVector())).isSolid() && level.move(new Step(pos, direction))) {
+        if (level.move(new Step(pos, direction))) {
             if (direction.isHorizontal()) {
                 this.direction = direction;
             }

@@ -1,8 +1,8 @@
 {
   "size": {
-    "width": 7,
-    "height": 5,
-    "length": 7
+    "width": 5,
+    "height": 4,
+    "length": 5
   },
   "pools": [
     {
@@ -25,7 +25,6 @@
       ]
     }
   ],
-  "pillars": [],
   "cuboids": [
     {
       "blocks_type": "pool",
@@ -40,9 +39,9 @@
           },
           "end":
           {
-            "x": 6,
+            "x": 4,
             "y": 0,
-            "z": 6
+            "z": 4
           }
         }
       ]
@@ -61,8 +60,8 @@
           "end":
           {
             "x": 0,
-            "y": 4,
-            "z": 6
+            "y": 3,
+            "z": 4
           }
         },
         {
@@ -74,29 +73,9 @@
           },
           "end":
           {
-            "x": 6,
-            "y": 4,
+            "x": 4,
+            "y": 3,
             "z": 0
-          }
-        }
-      ]
-    },
-    {
-      "blocks_type": "block",
-      "block": "air",
-      "positions": [
-        {
-          "start":
-          {
-            "x": 1,
-            "y": 0,
-            "z": 5
-          },
-          "end":
-          {
-            "x": 6,
-            "y": 0,
-            "z": 5
           }
         }
       ]
@@ -104,33 +83,11 @@
   ],
   "singles": [
     {
-      "blocks_type": "pool",
-      "pool": "floor",
-      "positions": [
-        {
-          "x": 4,
-          "y": 0,
-          "z": 5
-        }
-      ]
-    },
-    {
       "blocks_type": "block",
-      "block": "target",
+      "block": "air",
       "positions": [
         {
-          "x": 4,
-          "y": 0,
-          "z": 6
-        }
-      ]
-    },
-    {
-      "blocks_type": "block",
-      "block": "spike_block",
-      "positions": [
-        {
-          "x": 4,
+          "x": 1,
           "y": 0,
           "z": 4
         }
@@ -141,18 +98,49 @@
       "block": "box",
       "positions": [
         {
+          "x": 2,
+          "y": 1,
+          "z": 3
+        },
+        {
           "x": 3,
           "y": 1,
           "z": 3
+        }
+      ]
+    },
+    {
+      "blocks_type": "block",
+      "block": "target",
+      "positions": [
+        {
+          "x": 2,
+          "y": 0,
+          "z": 3
+        },
+        {
+          "x": 4,
+          "y": 0,
+          "z": 3
+        }
+      ]
+    },
+    {
+      "blocks_type": "block",
+      "block": "block",
+      "positions": [
+        {
+          "x": 2,
+          "y": 1,
+          "z": 2
         }
       ]
     }
   ],
   "player":
   {
-    "x": 6,
+    "x": 4,
     "y": 1,
-    "z": 2
-  },
-  "spike_activation_turns": 5
+    "z": 4
+  }
 }

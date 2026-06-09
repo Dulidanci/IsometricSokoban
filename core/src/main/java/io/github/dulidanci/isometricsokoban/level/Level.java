@@ -106,7 +106,7 @@ public class Level {
 
     public void update(float delta, Vector2 mousePos) {
         currentSteps.clear();
-        if (won) {
+        if (won && !dead) {
             if (wait < 1) {
                 wait += delta;
             } else {
@@ -205,18 +205,20 @@ public class Level {
 
     public boolean move(Step step) {
         if (validPosition(step.getTargetPos())) {
-            if (!getBlock(step.getTargetPos()).isSolid() || (getBlock(step.getTargetPos()).isSolid()
-                && getBlock(step.getTargetPos()).canBeMoved(this, new Step(step.getTargetPos(), step.stepDirection())))) {
+            if (validPosition(step.getTargetPos().add(Direction.DOWN.getVector())) && getBlock(step.getTargetPos().add(Direction.DOWN.getVector())).isSolid()) {
+                if (!getBlock(step.getTargetPos()).isSolid() || (getBlock(step.getTargetPos()).isSolid()
+                    && getBlock(step.getTargetPos()).canBeMoved(this, new Step(step.getTargetPos(), step.stepDirection())))) {
 
-                ChangeEntry target = new ChangeEntry(step.getTargetPos(), getBlock(step.getTargetPos()), getBlock(step.originalPos()));
-                setBlock(step.getTargetPos(), getBlock(step.originalPos()));
-                currentSteps.add(target);
+                    ChangeEntry target = new ChangeEntry(step.getTargetPos(), getBlock(step.getTargetPos()), getBlock(step.originalPos()));
+                    setBlock(step.getTargetPos(), getBlock(step.originalPos()));
+                    currentSteps.add(target);
 
-                ChangeEntry original = new ChangeEntry(step.originalPos(), getBlock(step.originalPos()), Blocks.AIR);
-                setBlock(step.originalPos(), Blocks.AIR);
-                currentSteps.add(original);
+                    ChangeEntry original = new ChangeEntry(step.originalPos(), getBlock(step.originalPos()), Blocks.AIR);
+                    setBlock(step.originalPos(), Blocks.AIR);
+                    currentSteps.add(original);
 
-                return true;
+                    return true;
+                }
             }
         }
 

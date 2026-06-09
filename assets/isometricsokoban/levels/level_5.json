@@ -2,7 +2,7 @@
   "size": {
     "width": 5,
     "height": 5,
-    "length": 8
+    "length": 7
   },
   "pools": [
     {
@@ -19,8 +19,9 @@
         "wall",
         "wall",
         "wall",
-        "wall",
-        "mossy_wall"
+        "mossy_wall",
+        "mossy_wall",
+        "flowery_wall"
       ]
     }
   ],
@@ -40,7 +41,7 @@
           {
             "x": 4,
             "y": 0,
-            "z": 7
+            "z": 6
           }
         }
       ]
@@ -68,13 +69,13 @@
           {
             "x": 0,
             "y": 0,
-            "z": 1
+            "z": 0
           },
           "end":
           {
             "x": 0,
             "y": 4,
-            "z": 7
+            "z": 6
           }
         }
       ]
@@ -86,15 +87,35 @@
         {
           "start":
           {
-            "x": 3,
+            "x": 4,
             "y": 0,
-            "z": 2
+            "z": 5
           },
           "end":
           {
             "x": 4,
             "y": 0,
-            "z": 7
+            "z": 6
+          }
+        }
+      ]
+    },
+    {
+      "blocks_type": "block",
+      "block": "box",
+      "positions": [
+        {
+          "start":
+          {
+            "x": 2,
+            "y": 1,
+            "z": 2
+          },
+          "end":
+          {
+            "x": 2,
+            "y": 1,
+            "z": 4
           }
         }
       ]
@@ -103,41 +124,41 @@
   "singles": [
     {
       "blocks_type": "block",
-      "block": "box",
+      "block": "target",
       "positions": [
         {
-          "x": 1,
-          "y": 1,
-          "z": 2
+          "x": 3,
+          "y": 0,
+          "z": 4
         },
         {
-          "x": 2,
-          "y": 1,
-          "z": 6
+          "x": 3,
+          "y": 0,
+          "z": 5
+        },
+        {
+          "x": 1,
+          "y": 0,
+          "z": 5
         }
       ]
     },
     {
-      "blocks_type": "block",
-      "block": "target",
+      "blocks_type": "pool",
+      "pool": "wall",
       "positions": [
         {
           "x": 1,
-          "y": 0,
-          "z": 7
-        },
-        {
-          "x": 2,
-          "y": 0,
-          "z": 2
+          "y": 1,
+          "z": 3
         }
       ]
     }
   ],
   "player":
   {
-    "x": 4,
+    "x": 2,
     "y": 1,
-    "z": 1
+    "z": 5
   }
 }
