@@ -4,6 +4,7 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import io.github.dulidanci.isometricsokoban.block.Blocks;
+import io.github.dulidanci.isometricsokoban.level.data.GameData;
 import io.github.dulidanci.isometricsokoban.registry.Registries;
 import io.github.dulidanci.isometricsokoban.screen.LevelSelectorScreen;
 import io.github.dulidanci.isometricsokoban.screen.ScreenManager;
@@ -15,6 +16,7 @@ public class IsometricSokoban implements ApplicationListener {
     private static IsometricSokoban instance;
     private ScreenManager screenManager;
     private AssetManager assetManager;
+    private GameData cachedData;
     public static final int MAX_LEVEL_COUNT = 12;
 
     private IsometricSokoban() {}
@@ -47,6 +49,8 @@ public class IsometricSokoban implements ApplicationListener {
         assetManager.load(ID + "/textures/widgets/you_win.png", Texture.class);
         assetManager.load(ID + "/textures/widgets/dead.png", Texture.class);
         assetManager.finishLoading();
+
+        cachedData = GameData.loadData();
 
         screenManager.setScreen(new LevelSelectorScreen());
     }
@@ -83,5 +87,13 @@ public class IsometricSokoban implements ApplicationListener {
 
     public ScreenManager getScreenManager() {
         return screenManager;
+    }
+
+    public GameData getGameData() {
+        return cachedData;
+    }
+
+    public void reloadData() {
+        cachedData = GameData.loadData();
     }
 }

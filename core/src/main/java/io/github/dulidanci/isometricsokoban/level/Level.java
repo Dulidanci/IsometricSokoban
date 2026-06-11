@@ -9,6 +9,7 @@ import com.badlogic.gdx.math.Vector2;
 import io.github.dulidanci.isometricsokoban.IsometricSokoban;
 import io.github.dulidanci.isometricsokoban.block.Block;
 import io.github.dulidanci.isometricsokoban.block.Blocks;
+import io.github.dulidanci.isometricsokoban.level.data.GameData;
 import io.github.dulidanci.isometricsokoban.level.util.BlockPos;
 import io.github.dulidanci.isometricsokoban.level.util.ChangeEntry;
 import io.github.dulidanci.isometricsokoban.level.util.Direction;
@@ -41,6 +42,7 @@ public class Level {
     private final ArrayList<ArrayList<ChangeEntry>> steps = new ArrayList<>();
     private final ArrayList<ChangeEntry> currentSteps = new ArrayList<>();
     private int moves;
+    private final int bestSolution;
     public final int SPIKE_ACTIVATION_TURNS;
     private boolean stabbing;
 
@@ -61,6 +63,9 @@ public class Level {
         this.wait = 0;
         this.moves = 0;
         this.stabbing = false;
+
+        GameData gameData = IsometricSokoban.getInstance().getGameData();
+        this.bestSolution = gameData.getLevelData(level).moves();
 
         this.normalWidgets.add(new Widget<>(576, 416, 64, 64, "restart_button_32")
             .setOnClick(t -> IsometricSokoban.getInstance().getScreenManager().setScreen(IsometricSokoban.getInstance().getScreenManager().getScreen())));
@@ -109,8 +114,11 @@ public class Level {
         if (won && !dead) {
             if (wait < 1) {
                 wait += delta;
-            } else {
+            } else if (wait < 2) {
+                wait += 2;
                 winWidgets.forEach(widget -> widget.setVisible(true));
+
+                GameData.saveData(level, moves);
             }
             winWidgets.forEach(widget -> widget.update(mousePos));
         } else {
@@ -284,7 +292,7 @@ public class Level {
             }
         }
 
-        font.draw(batch, "Level: " + (level + 1) + "\nMoves: " + moves + "\nBest solution: ", 32, 448);
+        font.draw(batch, "Level: " + (level + 1) + "\nMoves: " + moves + "\nBest solution: " + (bestSolution < 0 ? "-" : bestSolution), 32, 448);
 
         normalWidgets.forEach(widget -> widget.render(batch, font));
 

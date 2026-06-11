@@ -16,8 +16,8 @@ public class Widget<T extends Widget<T>> {
     public final int width;
     public final int height;
     public final String textureID;
-    private Consumer<T> onClick;
-    private boolean visible;
+    protected Consumer<T> onClick;
+    protected boolean visible;
 
     public Widget(int x, int y, int width, int height, String textureID) {
         this.x = x;

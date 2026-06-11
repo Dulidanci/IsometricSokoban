@@ -1,7 +1,6 @@
 package io.github.dulidanci.isometricsokoban.level.util;
 
 public enum Direction {
-    IDENTITY(0, 0, 0),
     RIGHT(1, 0, 0),
     UP(0, 1, 0),
     BACKWARDS(0, 0, 1),

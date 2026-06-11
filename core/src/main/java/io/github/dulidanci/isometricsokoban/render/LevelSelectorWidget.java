@@ -22,20 +22,22 @@ public class LevelSelectorWidget extends Widget<LevelSelectorWidget> {
 
     @Override
     public void render(SpriteBatch batch, BitmapFont font) {
-        batch.draw(button[2][0], x, y, 4, 4);
-        batch.draw(button[2][1], x + 4, y, width - 8, 4);
-        batch.draw(button[2][2], x + width - 4, y, 4, 4);
-        batch.draw(button[1][0], x, y + 4, 4, height - 8);
-        batch.draw(button[1][1], x + 4, y + 4, width - 8, height - 8);
-        batch.draw(button[1][2], x + width - 4, y + 4, 4, height - 8);
-        batch.draw(button[0][0], x, y + height - 4, 4, 4);
-        batch.draw(button[0][1], x + 4, y + height - 4, width - 8, 4);
-        batch.draw(button[0][2], x + width - 4, y + height - 4, 4, 4);
+        if (visible) {
+            batch.draw(button[2][0], x, y, 4, 4);
+            batch.draw(button[2][1], x + 4, y, width - 8, 4);
+            batch.draw(button[2][2], x + width - 4, y, 4, 4);
+            batch.draw(button[1][0], x, y + 4, 4, height - 8);
+            batch.draw(button[1][1], x + 4, y + 4, width - 8, height - 8);
+            batch.draw(button[1][2], x + width - 4, y + 4, 4, height - 8);
+            batch.draw(button[0][0], x, y + height - 4, 4, 4);
+            batch.draw(button[0][1], x + 4, y + height - 4, width - 8, 4);
+            batch.draw(button[0][2], x + width - 4, y + height - 4, 4, 4);
 
-        font.getData().setScale(2);
-        if (number >= 0) {
-            font.draw(batch, String.valueOf(number + 1), x, y + (float) height * 0.7f, width, Align.center, false);
+            font.getData().setScale(2);
+            if (number >= 0) {
+                font.draw(batch, String.valueOf(number + 1), x, y + (float) height * 0.7f, width, Align.center, false);
+            }
+            font.getData().setScale(1);
         }
-        font.getData().setScale(1);
     }
 }
